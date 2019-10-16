@@ -1,4 +1,6 @@
 import * as core from '@actions/core'
+import * as github from '@actions/github'
+import { WebhookPayload } from '@actions/github/lib/interfaces'
 import run from '../debug'
 import fs from 'fs'
 import yaml from 'js-yaml'
@@ -10,7 +12,13 @@ beforeEach(() => {
     const envVar = `INPUT_${name.replace(/ /g, '_').toUpperCase()}`
     process.env[envVar] = doc.inputs[name]['default']
   })
+  github.context.payload = {
+    pusher: {
+      name: 'mona',
+    },
+  } as WebhookPayload
 })
+
 
 afterEach(() => {
   const doc = yaml.safeLoad(fs.readFileSync(__dirname + '/../action.yml', 'utf8'))
